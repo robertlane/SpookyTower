@@ -216,7 +216,8 @@ def main():  # Main function.
             if jumping and body.vel_y >= 0:  # Jumping up.
                 if body.vel_y == VEL_Y:  # First moment of the jump.
                     JUMPING_SOUND.play()
-                print("Jumping...")
+                if __debug__:  ### Adding a debug check for console messages - Rob
+                    print("Jumping...")
                 body.y -= body.vel_y
                 body.vel_y -= 1
                 if body.y <= HEIGHT / 5:  # If the body get to the top quarter of the screen.
@@ -227,15 +228,18 @@ def main():  # Main function.
                     jumping, standing, falling = False, False, True
             if falling:  # Falling down.
                 if OnShelf():  # Standing on a shelf.
-                    print("Standing...")
+                    if __debug__: ### Adding a debug check for console messages - Rob
+                        print("Standing...")
                     jumping, standing, falling = False, True, False
                 else:  # Not standing - keep falling down.
-                    print("Falling...")
+                    if __debug__: ### Adding a debug check for console messages - Rob
+                        print("Falling...")
                     body.y -= body.vel_y
                     body.vel_y -= 1
             CheckIfTouchingFloor()
             if standing and not OnShelf() and not on_ground:  # If falling from a shelf.
-                print("Falling from shelf...")
+                if __debug__: ### Adding a debug check for console messages - Rob
+                    print("Falling from shelf...")
                 body.vel_y = 0  # Falls slowly from the shelf and not as it falls at the end of a jumping.
                 standing, falling = False, True
             if body.acceleration == MAX_ACCELERATION - 1:  # While on max acceleration, getting a jumping height boost.
