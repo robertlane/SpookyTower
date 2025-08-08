@@ -33,8 +33,8 @@ and add a functional end-game scene—all while practicing modular code editing 
 1. Clone or download the project folder  
 2. Make sure Python and the `pygame` library are installed  
 3. Run `spooky_tower.py` in your IDE or terminal  
-4. Use arrow keys to move and jump  
-5. When the player dies, the end screen will appear with options to retry or exit
+4. Use arrow keys to move and space bar to jump  
+5. When the player dies, the end screen will appear with options to retry or exit which you use arrow keys to select and press enter to confirm
 
 ---
 
@@ -52,8 +52,6 @@ and add a functional end-game scene—all while practicing modular code editing 
 
 /src
   spooky_tower.py
-  end_scene.py
-  character.py
 
 /docs
   README.md
