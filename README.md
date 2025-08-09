@@ -84,5 +84,14 @@ Original game: **IcyTower** by GitHub user [Bar-Levi](https://github.com/Bar-Lev
 Assets were custom-made or generated with Microsoft Copilot.  
 Game framework: Python Arcade Library (https://api.arcade.academy/en/latest/)
 
+Music by Eric Matyas
+www.soundimage.org
+"Arcade Puzzler"
+"Arcade Puzzler_v001_LoFi"
+
+Sound Effects
+Eric Matyas
+"Drone Alert1" - modified
+
 ---
 
