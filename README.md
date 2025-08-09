@@ -1,5 +1,5 @@
 **Mod the Game: Python Arcade Remix **
-A spooky vertical jumper remix of "IcyTower" by Team Rob, Elias, and Scarlet_
+A spooky vertical jumper remix of "IcyTower" by Team _Rob, Elias, and Scarlet_
 
 ---
 
@@ -41,20 +41,24 @@ and add a functional end-game scene—all while practicing modular code editing 
 **File Structure**
 
 ```
+spooky_tower.py
+README.md
+
 /assets
-  body.png
+  ### Graphics ###
   background.png
+  body_01.png
+  body_02.png
+  body_03.png
   platform.png
   pillar.png
-  /sounds
-    jump.wav
-    death.wav
-
-/src
-  spooky_tower.py
-
-/docs
-  README.md
+  ### Sounds ###
+  horray_sound.wav
+  jump_01.ogg
+  jump_02.ogg
+  jump_03.ogg
+  music_gameplay.ogg
+  music_menus.ogg
 ```
 
 ---
@@ -82,15 +86,18 @@ and add a functional end-game scene—all while practicing modular code editing 
 This remix was created for educational purposes.  
 Original game: **IcyTower** by GitHub user [Bar-Levi](https://github.com/Bar-Levi)  
 Assets were custom-made or generated with Microsoft Copilot.  
-Game framework: Python Arcade Library (https://api.arcade.academy/en/latest/)
+Game framework: [Pygame](https://www.pygame.org/)
 
-Music by Eric Matyas
-www.soundimage.org
+Music by Eric Matyas\
+(www.soundimage.org)
+
 "Arcade Puzzler"
+
 "Arcade Puzzler_v001_LoFi"
 
-Sound Effects
-Eric Matyas
+
+Sound Effects by Eric Matyas
+
 "Drone Alert1" - modified
 
 ---
