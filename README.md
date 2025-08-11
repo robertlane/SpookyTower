@@ -10,6 +10,10 @@ and add a functional end-game scene—all while practicing modular code editing 
 
 ---
 
+<img width="997" height="699" alt="Gameplay_Screenshot" src="https://github.com/user-attachments/assets/c5cef8db-272e-44f2-9cea-3fa7978ddf1a" />
+
+---
+
 **What's New**
 
 - Main character changed from a turtle to a sheet ghost (custom image by Scarlet)  
@@ -34,7 +38,7 @@ and add a functional end-game scene—all while practicing modular code editing 
 1. Clone or download the project folder  
 2. Make sure Python and the `pygame` library are installed  
 3. Run `spooky_tower.py` in your IDE or terminal  
-4. Use arrow keys to move and space bar to jump  
+4. Use arrow keys or WASD to move and space bar to jump  
 5. When the player dies, the end screen will appear with options to retry or exit which you use arrow keys to select and press enter to confirm
 
 ---
