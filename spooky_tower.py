@@ -189,8 +189,7 @@ def ScreenRollDown():  # Increasing the y values of all elements.
         WALLS_Y = -108
 
 
-
-# End scene function
+# End scene function - Scarlet
 def show_end_scene():
     global highest_shelf_reached
     font_big = pygame.font.SysFont("Arial", 60)
