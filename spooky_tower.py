@@ -2,7 +2,7 @@ import sys
 import pygame
 import random
 
-GAME_FPS = 150
+GAME_FPS = 60 # Changed games fps from 150 to 60 - Scarlet
 WIDTH, HEIGHT = 1000, 700
 JUMPING_HEIGHT = 20
 MAX_ACCELERATION = 13
@@ -14,10 +14,10 @@ GAMEPLAY_SOUND_LENGTH = 31  # 31 seconds.
 SHELVES_COUNT = 500  # Number of shelves in the game.
 
 # Images:
-BODY_IMAGE = pygame.image.load("Assets/body.png")
-BACKGROUND = pygame.image.load("Assets/background.png")
-BRICK_IMAGE = pygame.image.load("Assets/brick_block.png")
-SHELF_BRICK_IMAGE = pygame.image.load("Assets/shelf_brick.png")
+BODY_IMAGE = pygame.image.load("Assets/body.png") # this is the character image which we are changing from turtle to ghost - Scarlet
+BACKGROUND = pygame.image.load("Assets/background.png") # this was brick, changed to nightsky - Scarlet
+BRICK_IMAGE = pygame.image.load("Assets/brick_block.png") # this is the pillar image - Scarlet
+SHELF_BRICK_IMAGE = pygame.image.load("Assets/shelf_brick.png") # this is the platform we jump onto - Scarlet
 
 # Walls settings:
 WALLS_Y = -128
@@ -27,7 +27,7 @@ RIGHT_WALL_BOUND = WIDTH - WALL_WIDTH
 LEFT_WALL_BOUND = WALL_WIDTH
 
 # Background settings:
-BACKGROUND_WIDTH = WIDTH - 2 * WALL_WIDTH  # 2*64 is for two walls on the sides.
+BACKGROUND_WIDTH = WIDTH - 2 * WALL_WIDTH  # removed irrelevant comment - Scarlet
 BACKGROUND_ROLLING_SPEED = 1
 BACKGROUND_Y = HEIGHT - BACKGROUND.get_height()
 background_y = BACKGROUND_Y
@@ -67,6 +67,9 @@ class Body:
         self.jumpable = self.vel_y <= 0  # If body is hitting a level, then it can jump only if the body is going down.
 
 
+
+# Track the highest shelf/platform reached
+highest_shelf_reached = 0 # added a variable to track the highest shelf reached - Scarlet
 body = Body()
 
 total_shelves_list = []
@@ -138,14 +141,16 @@ def DrawWindow():  # Basically, drawing the screen.
 
 
 def OnShelf():  # Checking whether the body is on a shelf, returning True/False.
-    global jumping, standing, falling, BACKGROUND_ROLLING_SPEED, current_standing_shelf
+    global jumping, standing, falling, BACKGROUND_ROLLING_SPEED, current_standing_shelf, highest_shelf_reached # Changed the global variables to include the new ones - Scarlet
     if body.vel_y <= 0:  # Means the body isn't moving upwards, so now it's landing.
         for shelf in total_shelves_list:
-            if body.y <= shelf.rect.y - body.size <= body.y - body.vel_y:  # If y values collide.shelf.rect.y - body.size >= body.y and shelf.rect.y - body.size <= body.y - body.vel_y
-                if body.x + body.size * 2 / 3 >= shelf.rect.x and body.x + body.size * 1 / 3 <= shelf.rect.x + shelf.width:  # if x values collide.
+            if body.y <= shelf.rect.y - body.size <= body.y - body.vel_y:
+                if body.x + body.size * 2 / 3 >= shelf.rect.x and body.x + body.size * 1 / 3 <= shelf.rect.x + shelf.width: # Checking if the body is on the shelf - Scarlet
                     body.y = shelf.rect.y - body.size
+                    if shelf.number > highest_shelf_reached:
+                        highest_shelf_reached = shelf.number # added a variable to track the highest shelf reached - Scarlet
                     if current_standing_shelf != shelf.number and shelf.number % 50 == 0 and shelf.number != 0:
-                        BACKGROUND_ROLLING_SPEED += 1  # Rolling speed increases every 50 shelves.
+                        BACKGROUND_ROLLING_SPEED += 1 # Increased the speed of the background rolling down when reaching a new shelf - Scarlet
                         current_standing_shelf = shelf.number
                     if shelf.number % 100 == 0 and shelf.number != 0:
                         HOORAY_SOUND.play()
@@ -169,9 +174,67 @@ def ScreenRollDown():  # Increasing the y values of all elements.
         WALLS_Y = -108
 
 
-def GameOver():  # Quitting the game.
-    pygame.quit()
-    sys.exit(1)
+
+# End scene function
+def show_end_scene():
+    global highest_shelf_reached
+    font_big = pygame.font.SysFont("Arial", 60)
+    font_small = pygame.font.SysFont("Arial", 36)
+    selected = 0
+    options = ["Try again", "Exit"]
+    clock = pygame.time.Clock()
+    while True:
+        # Draw the same background as the game
+        WIN.blit(BACKGROUND, (32, BACKGROUND_Y))
+        text1 = font_big.render("You died!", True, WHITE)
+        WIN.blit(text1, (WIDTH // 2 - text1.get_width() // 2, HEIGHT // 3))
+        msg = f"Highest level reached: {highest_shelf_reached}"
+        text2 = font_small.render(msg, True, WHITE)
+        WIN.blit(text2, (WIDTH // 2 - text2.get_width() // 2, HEIGHT // 3 + 80))
+        for i, opt in enumerate(options):
+            color = (255, 255, 0) if i == selected else WHITE
+            opt_text = font_small.render(opt, True, color)
+            WIN.blit(opt_text, (WIDTH // 2 - opt_text.get_width() // 2, HEIGHT // 2 + 60 + i * 60))
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit(0)
+            if event.type == pygame.KEYDOWN:
+                if event.key in [pygame.K_UP, pygame.K_w]:
+                    selected = (selected - 1) % len(options)
+                if event.key in [pygame.K_DOWN, pygame.K_s]:
+                    selected = (selected + 1) % len(options)
+                if event.key in [pygame.K_RETURN, pygame.K_SPACE]:
+                    if selected == 0:
+                        restart_game()
+                        return
+                    elif selected == 1:
+                        pygame.quit()
+                        sys.exit(0)
+        clock.tick(30)
+
+def restart_game():
+    global body, total_shelves_list, highest_shelf_reached, current_standing_shelf, BACKGROUND_ROLLING_SPEED, background_y, WALLS_Y, rolling_down
+    body = Body()
+    total_shelves_list.clear()
+    for num in range(0, SHELVES_COUNT + 1):
+        new_shelf = Shelf(num)
+        if num % 50 == 0:
+            new_shelf.width = BACKGROUND_WIDTH
+            new_shelf.rect.width = BACKGROUND_WIDTH
+            new_shelf.x = WALL_WIDTH
+            new_shelf.rect.x = WALL_WIDTH
+        total_shelves_list.append(new_shelf)
+    highest_shelf_reached = 0
+    current_standing_shelf = None
+    BACKGROUND_ROLLING_SPEED = 1
+    background_y = BACKGROUND_Y
+    WALLS_Y = -128
+    rolling_down = False
+
+def GameOver():
+    show_end_scene()
 
 
 def CheckIfTouchingFloor():  # Checking if the body is still on the main ground.
