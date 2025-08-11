@@ -119,14 +119,13 @@ def Move(direction):  # Moving the body according to the wanted direction.
 
 def HandleMovement(keys_pressed):  # Handling the Left/Right buttons pressing.
     global body, new_movement, current_direction
-    if keys_pressed[pygame.K_LEFT] and body.x > LEFT_WALL_BOUND:  # If pressed "Left", and body is inside the bounding.
+    if (keys_pressed[pygame.K_LEFT] or keys_pressed[pygame.K_a]) and body.x > LEFT_WALL_BOUND:  # If pressed "Left", and body is inside the bounding.
         current_direction = "Left"
         if body.acceleration + 3 <= MAX_ACCELERATION:  # If body's movement speed isn't maxed.
             body.acceleration += 3  # Accelerating the body's movement speed.
         else:
             body.acceleration = MAX_ACCELERATION
-    if keys_pressed[
-        pygame.K_RIGHT] and body.x < RIGHT_WALL_BOUND:  # If pressed "Right", and body is inside the bounding.
+    if (keys_pressed[pygame.K_RIGHT] or keys_pressed[pygame.K_d]) and body.x < RIGHT_WALL_BOUND:  # If pressed "Right", and body is inside the bounding.
         current_direction = "Right"
         if body.acceleration + 3 <= MAX_ACCELERATION:  # If body's movement speed isn't maxed.
             body.acceleration += 3  # Accelerating the body's movement speed.
@@ -191,12 +190,13 @@ def ScreenRollDown():  # Increasing the y values of all elements.
 
 # End scene function - Scarlet
 def show_end_scene():
-    global highest_shelf_reached
+    global highest_shelf_reached, MUSIC_MENUS, MUSIC_GAMEPLAY
     font_big = pygame.font.SysFont("Arial", 60)
     font_small = pygame.font.SysFont("Arial", 36)
     selected = 0
     options = ["Try again", "Exit"]
     clock = pygame.time.Clock()
+    PlayMusic(MUSIC_MENUS)
     while True:
         # Draw the same background as the game
         WIN.blit(BACKGROUND, (32, BACKGROUND_Y))
@@ -222,6 +222,7 @@ def show_end_scene():
                 if event.key in [pygame.K_RETURN, pygame.K_SPACE]:
                     if selected == 0:
                         restart_game()
+                        PlayMusic(MUSIC_GAMEPLAY)
                         return
                     elif selected == 1:
                         pygame.quit()
@@ -296,7 +297,7 @@ def main():  # Main function.
             HandleMovement(keys_pressed)  # Moving according to the pressed buttons.
             if body.acceleration != 0:  # If there's any movement.
                 Move(current_direction)
-            if keys_pressed[pygame.K_SPACE] and (
+            if (keys_pressed[pygame.K_SPACE] or keys_pressed[pygame.K_w] or keys_pressed[pygame.K_UP]) and (
                     standing or on_ground):  # If enter "Space" and currently not in mid-jump.
                 body.vel_y = VEL_Y  # Resets the body's jumping velocity.
                 jumping, standing, falling = True, False, False
