@@ -15,14 +15,15 @@ and add a functional end-game scene—all while practicing modular code editing 
 - Main character changed from a turtle to a sheet ghost (custom image by Scarlet)  
 - Background changed from brick wall to a retro night sky (custom image by Scarlet)  
 - Platform and pillar sprites replaced with new designs (by Elias)  
-- Default sounds replaced with custom sound effects (by Rob)  
+- Default sounds replaced with custom sound effects (by Rob)
+- Animated character body (by Rob)  
 - Added an end-game scene with options to retry or exit to desktop (created by Scarlet)
 
 ---
 
 **Team Roles**
 
-- Rob – Team Lead, Sound Designer  
+- Rob – Team Lead, Sound Designer and Animator
 - Elias – Developer, Platform & Pillar Artist  
 - Scarlet – Developer, Background & Character Artist, README Author
 
@@ -50,8 +51,8 @@ README.md
   body_01.png
   body_02.png
   body_03.png
-  platform.png
-  pillar.png
+  brick_block.png
+  shelf_brick.png
   ### Sounds ###
   horray_sound.wav
   jump_01.ogg
