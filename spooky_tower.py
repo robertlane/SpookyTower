@@ -12,12 +12,20 @@ pygame.init()
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 GAMEPLAY_SOUND_LENGTH = 31  # 31 seconds.
 SHELVES_COUNT = 500  # Number of shelves in the game.
+### New constant for music volume - Rob
+MUSIC_VOLUME = 0.8 # Must be a float between 0.0 (off) and 1.0 (max volume)
+### New constant for character animation - Rob
+BODY_ANIMATION_SPEED = 0.05
 
 # Images:
-BODY_IMAGE = pygame.image.load("Assets/body.png") # this is the character image which we are changing from turtle to ghost - Scarlet
-BACKGROUND = pygame.image.load("Assets/background.png") # this was brick, changed to nightsky - Scarlet
-BRICK_IMAGE = pygame.image.load("Assets/brick_block.png") # this is the pillar image - Scarlet
-SHELF_BRICK_IMAGE = pygame.image.load("Assets/shelf_brick.png") # this is the platform we jump onto - Scarlet
+### Changing BODY_IMAGE to an array to allow for character animation - Rob
+BODY_IMAGE = [pygame.image.load("Assets/body_01.png"),
+              pygame.image.load("Assets/body_02.png"),
+              pygame.image.load("Assets/body_03.png")]
+body_index = 0
+BACKGROUND = pygame.image.load("Assets/background.png")
+BRICK_IMAGE = pygame.image.load("Assets/brick_block.png")
+SHELF_BRICK_IMAGE = pygame.image.load("Assets/shelf_brick.png")
 
 # Walls settings:
 WALLS_Y = -128
@@ -83,9 +91,16 @@ for num in range(0, SHELVES_COUNT + 1):  # Creating all the game shelves.
     total_shelves_list.append(new_shelf)
 
 # Sounds:
-JUMPING_SOUND = pygame.mixer.Sound("Assets/jumping_sound.wav")
-GAMEPLAY_SOUND = pygame.mixer.Sound("Assets/gameplay_sound.wav")
+### Changing JUMPING_SOUND to an array to allow random jump sound to avoid audio fatigue - Rob
+JUMPING_SOUND = [pygame.mixer.Sound("Assets/jump_01.ogg"),
+                 pygame.mixer.Sound("Assets/jump_02.ogg"),
+                 pygame.mixer.Sound("Assets/jump_03.ogg")]
 HOORAY_SOUND = pygame.mixer.Sound("Assets/hooray_sound.wav")
+
+### Changing GAMEPLAY_SOUND to use built in music handling - Rob
+MUSIC_GAMEPLAY = "Assets/music_gameplay.ogg"
+MUSIC_MENUS = "Assets/music_menus.ogg"
+
 
 
 def Move(direction):  # Moving the body according to the wanted direction.
@@ -136,7 +151,7 @@ def DrawWindow():  # Basically, drawing the screen.
     for y in range(WALLS_Y, HEIGHT, 108):  # Drawing the walls.
         WIN.blit(BRICK_IMAGE, (0, y))
         WIN.blit(BRICK_IMAGE, (WIDTH - WALL_WIDTH, y))
-    WIN.blit(BODY_IMAGE, (body.x, body.y))  # Drawing the body.
+    WIN.blit(BODY_IMAGE[body_index], (body.x, body.y))  # Drawing the body.
     pygame.display.update()
 
 
@@ -251,19 +266,29 @@ def HandleBackground(): # Drawing the background.
     if body.y >= total_shelves_list[500].rect.y:
         WIN.blit(BACKGROUND, (32, background_y))
 
+### New method to wrap all of our music calls for reusability - Rob
+def PlayMusic(music):
+    global MUSIC_VOLUME
+    pygame.mixer.music.unload()
+    pygame.mixer.music.load(music)
+    pygame.mixer.music.set_volume(MUSIC_VOLUME)
+    pygame.mixer.music.play(loops=-1)
+    if __debug__:
+        print(f"Loaded {music} at volume {MUSIC_VOLUME}")
+
 
 def main():  # Main function.
-    global body, keys_pressed, total_shelves_list, jumping, standing, falling, rolling_down, new_movement
+    ### Added body_index to global variables - Rob 
+    global body, keys_pressed, total_shelves_list, jumping, standing, falling, rolling_down, new_movement, body_index
     game_running = True
     rolling_down = False
     paused = False
-    sound_timer = 0
+    body_timer = 0
+    ### New call to play the loaded music - Rob
+    PlayMusic(MUSIC_GAMEPLAY)
     while game_running:
         while game_running and not paused:
             on_ground = not rolling_down and body.y == HEIGHT - 25 - body.size
-            if sound_timer % (56 * GAMEPLAY_SOUND_LENGTH) == 0:  # 56 = Program loops count per second.
-                GAMEPLAY_SOUND.play()
-            sound_timer += 1
             if rolling_down:  # If screen should roll down.
                 for _ in range(BACKGROUND_ROLLING_SPEED):
                     ScreenRollDown()
@@ -278,7 +303,7 @@ def main():  # Main function.
                 jumping, standing, falling = True, False, False
             if jumping and body.vel_y >= 0:  # Jumping up.
                 if body.vel_y == VEL_Y:  # First moment of the jump.
-                    JUMPING_SOUND.play()
+                    JUMPING_SOUND[random.randrange(0,2)].play()
                 if __debug__:  ### Adding a debug check for console messages - Rob
                     print("Jumping...")
                 body.y -= body.vel_y
@@ -313,7 +338,16 @@ def main():  # Main function.
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     game_running = False
-            pygame.time.Clock().tick(GAME_FPS)
+            ### Small refactor so delta_time can be used for animation - Rob
+            delta_time = pygame.time.Clock().tick(GAME_FPS) /1000.0
+
+            ### Handle body_timer for character animation - Rob
+            body_timer += delta_time
+            if body_timer > BODY_ANIMATION_SPEED:
+                body_timer = 0
+                body_index += 1
+                if body_index >= len(BODY_IMAGE):
+                    body_index = 0
 
 
 if __name__ == "__main__":
