@@ -27,6 +27,10 @@ BACKGROUND = pygame.image.load("Assets/background.png")
 BRICK_IMAGE = pygame.image.load("Assets/brick_block.png")
 SHELF_BRICK_IMAGE = pygame.image.load("Assets/shelf_brick.png")
 
+# Set window icon and window title
+pygame.display.set_icon(BODY_IMAGE[0])
+WIN_TITLE = "Spooky Tower"
+
 # Walls settings:
 WALLS_Y = -128
 WALL_WIDTH = 128
@@ -351,4 +355,5 @@ def main():  # Main function.
 
 
 if __name__ == "__main__":
+    pygame.display.set_caption(WIN_TITLE)
     main()
